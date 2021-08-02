@@ -7,7 +7,6 @@ function App() {
   const audioRef = useRef()
   const recordedAudioRef = useRef()
   const stopRec = useRef()
-  const startRec = useRef()
 
   const holdAudio = (e) => {
     console.log(e.target.files[0])
@@ -17,30 +16,32 @@ function App() {
   }
 
 
-  const record = (e) => {
-    //e.stopPropagation()
+
+  const record = () => {
+
     window.navigator.mediaDevices.getUserMedia({ audio: true, video: false })
       .then((stream) => {
-
+        console.log(stream)
         const options = { mimeType: 'audio/webm' };
         const mediaRecorder = new MediaRecorder(stream, options);
         let data = [];
 
-        startRec.current.addEventListener('click', (e) => {
-          e.stopPropagation()
-          mediaRecorder.start()
-          console.log("from start", mediaRecorder.state)
-        })
+        mediaRecorder.start()
+        console.log("from start", mediaRecorder.state)
+
         stopRec.current.addEventListener('click', () => {
-          console.log("from stop", mediaRecorder.state)
-          if (mediaRecorder.state != "inactive")
+          if (mediaRecorder.state != "inactive") {
             mediaRecorder.stop()
+            console.log("stopped", mediaRecorder.state)
+          }
         })
+
         mediaRecorder.addEventListener('dataavailable', function (e) {
           if (e.data.size > 0) {
             data.push(e.data)
           }
         })
+
         mediaRecorder.addEventListener('stop', function () {
           const blob = new Blob(data, { 'type': 'audio/mp3' })
           data = []
@@ -57,10 +58,9 @@ function App() {
     <Grid className="App">
       <header className="App-header">
         <Grid container direction="column">
+
           <Grid item>
-            <div onClick={(e) => { record(e) }}>
-              <button ref={startRec} >Start singing</button>
-            </div>
+            <button onClick={record}> Start singing</button>
             &nbsp;
             <button ref={stopRec}>Stop singing</button>
           </Grid>
@@ -83,7 +83,7 @@ function App() {
           </Grid>
         </Grid>
       </header>
-    </Grid>
+    </Grid >
   );
 }
 
