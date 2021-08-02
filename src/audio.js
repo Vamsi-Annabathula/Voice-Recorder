@@ -15,8 +15,6 @@ function App() {
     audioRef.current.src = url
   }
 
-
-
   const record = () => {
 
     window.navigator.mediaDevices.getUserMedia({ audio: true, video: false })
